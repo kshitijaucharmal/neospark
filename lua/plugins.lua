@@ -6,7 +6,7 @@
 return require('packer').startup(function(use)
     -- Packer can manage itself
     use { 'wbthomason/packer.nvim' }
-    use {'neoclide/coc.nvim', branch = 'release'}
+    use { 'neoclide/coc.nvim', branch = 'release'}
     use { 'mfussenegger/nvim-dap' }
     use { 'nvim-telescope/telescope.nvim' }
     use { 'nvim-lua/plenary.nvim' }
