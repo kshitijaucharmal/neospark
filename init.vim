@@ -84,7 +84,7 @@ EOF
 nnoremap <leader>u :UndotreeToggle<CR>
 
 " Harpoon
-" nnoremap <C-h> :lua require("harpoon.ui").toggle_quick_menu()<cr>
+nnoremap <Leader>hh :lua require("harpoon.ui").toggle_quick_menu()<cr>
 nnoremap <leader>ha <cmd> :lua require("harpoon.mark").add_file()<cr>
 nnoremap <leader>1 :lua require("harpoon.ui").nav_file(1)<cr>
 nnoremap <leader>2 :lua require("harpoon.ui").nav_file(2)<cr>
@@ -92,6 +92,7 @@ nnoremap <leader>3 :lua require("harpoon.ui").nav_file(3)<cr>
 nnoremap <leader>4 :lua require("harpoon.ui").nav_file(4)<cr>
 nnoremap <leader>5 :lua require("harpoon.ui").nav_file(5)<cr>
 nnoremap <leader>6 :lua require("harpoon.ui").nav_file(6)<cr>
+
 " nnoremap <leader>hh :lua require("harpoon.ui").nav_next()<cr>
 " nnoremap <leader>hH :lua require("harpoon.ui").nav_prev()<cr>
 
@@ -113,8 +114,8 @@ colo catppuccin-mocha
 
 syntax enable
 filetype plugin on
-highlight Normal ctermbg=none
-highlight Nontext ctermbg=none
+"highlight Normal ctermbg=none
+"highlight Nontext ctermbg=none
 
 " Neovide specific
 if exists('g:neovide')
