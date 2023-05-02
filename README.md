@@ -1,9 +1,13 @@
 # Neo-Spark
 ![neospark](neospark.png)
 
-## This is my nvim Config
-
-I'm still a beginner, and have merged the vimscript and lua Config paradigms
+## Installation
+Just clone the repo and cp the files to ~/.config/nvim
+```bash
+git clone https://github.com/kshitijaucharmal/neospark.git
+mkdir -p ~/.config/nvim
+cp -r * ~/.config/nvim/
+```
 
 ## Contents
 + Package Manager - Packer (lua)
