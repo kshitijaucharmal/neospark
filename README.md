@@ -9,6 +9,7 @@ I'm still a beginner, and have merged the vimscript and lua Config paradigms
 + Other settings (vimscript)
 
 ## Plugins Installed
+### Productivity
 + [packer](https://github.com/wbthomason/packer.nvim)
 + [coc.nvim](https://github.com/neoclide/coc.nvim)
 + [nvim-dap](https://github.com/mfussenegger/nvim-dap)
@@ -36,6 +37,8 @@ I'm still a beginner, and have merged the vimscript and lua Config paradigms
 + [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator)
 + [vim-fugitive](https://github.com/tpope/vim-fugitive)
 + [undotree](https://github.com/mbbill/undotree)
+
+### Themes
 + [omni.vim](https://github.com/yonlu/omni.vim)
 + [material.nvim](https://github.com/marko-cerovac/material.nvim)
 + [vim-airline-themes](https://github.com/vim-airline/vim-airline-themes)
