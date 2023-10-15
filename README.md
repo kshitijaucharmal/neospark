@@ -7,7 +7,6 @@ Just clone the repo and cp the files to ~/.config/nvim
 git clone https://github.com/kshitijaucharmal/neospark.git
 mkdir -p ~/.config/nvim
 cp -r * ~/.config/nvim/
-neovim +PackerSync +qall
 ```
 
 ## Contents

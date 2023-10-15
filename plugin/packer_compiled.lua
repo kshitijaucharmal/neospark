@@ -49,8 +49,8 @@ local function save_profiles(threshold)
 end
 
 time([[Luarocks path setup]], true)
-local package_path_str = "/home/kshitij/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.0-beta3/share/lua/5.1/?/init.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/luarocks/rocks-5.1/?/init.lua"
-local install_cpath_pattern = "/home/kshitij/.cache/nvim/packer_hererocks/2.1.0-beta3/lib/lua/5.1/?.so"
+local package_path_str = "/home/kshitij/.cache/nvim/packer_hererocks/2.1.1694285958/share/lua/5.1/?.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.1694285958/share/lua/5.1/?/init.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.1694285958/lib/luarocks/rocks-5.1/?.lua;/home/kshitij/.cache/nvim/packer_hererocks/2.1.1694285958/lib/luarocks/rocks-5.1/?/init.lua"
+local install_cpath_pattern = "/home/kshitij/.cache/nvim/packer_hererocks/2.1.1694285958/lib/lua/5.1/?.so"
 if not string.find(package.path, package_path_str, 1, true) then
   package.path = package.path .. ';' .. package_path_str
 end
@@ -89,13 +89,8 @@ _G.packer_plugins = {
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/ayu-vim",
     url = "https://github.com/ayu-theme/ayu-vim"
   },
-  backtothefuture = {
-    loaded = true,
-    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/backtothefuture",
-    url = "https://github.com/benjaminjamesxyz/backtothefuture"
-  },
   catppuccin = {
-    config = { "\27LJ\2\nd\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\2\16term_colors\2\27transparent_background\2\nsetup\15catppuccin\frequire\0" },
+    config = { "\27LJ\2\nd\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\2\27transparent_background\2\16term_colors\2\nsetup\15catppuccin\frequire\0" },
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/catppuccin",
     url = "https://github.com/catppuccin/nvim"
@@ -109,11 +104,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/dracula",
     url = "https://github.com/dracula/vim"
-  },
-  ["everblush.vim"] = {
-    loaded = true,
-    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/everblush.vim",
-    url = "https://github.com/mangeshrex/everblush.vim"
   },
   everforest = {
     loaded = true,
@@ -156,6 +146,11 @@ _G.packer_plugins = {
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/jellybeans.vim",
     url = "https://github.com/nanotech/jellybeans.vim"
   },
+  ["leetcode.vim"] = {
+    loaded = true,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/leetcode.vim",
+    url = "https://github.com/ianding1/leetcode.vim"
+  },
   ["markdown-preview.nvim"] = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/markdown-preview.nvim",
@@ -191,6 +186,15 @@ _G.packer_plugins = {
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/nordic.nvim",
     url = "https://github.com/AlexvZyl/nordic.nvim"
   },
+  ["nvim-autopairs"] = {
+    config = { "\27LJ\2\n>\0\0\3\0\3\0\0066\0\0\0'\2\1\0B\0\2\0029\0\2\0B\0\1\1K\0\1\0\nsetup\21config.autopairs\frequire\0" },
+    loaded = false,
+    needs_bufread = false,
+    only_cond = false,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/opt/nvim-autopairs",
+    url = "https://github.com/windwp/nvim-autopairs",
+    wants = { "nvim-treesitter" }
+  },
   ["nvim-dap"] = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/nvim-dap",
@@ -205,11 +209,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/omni.vim",
     url = "https://github.com/yonlu/omni.vim"
-  },
-  ["omnisharp-vim"] = {
-    loaded = true,
-    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/omnisharp-vim",
-    url = "https://github.com/OmniSharp/omnisharp-vim"
   },
   ["onedark.nvim"] = {
     loaded = true,
@@ -256,11 +255,6 @@ _G.packer_plugins = {
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-airline-themes",
     url = "https://github.com/vim-airline/vim-airline-themes"
   },
-  ["vim-anyfold"] = {
-    loaded = true,
-    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-anyfold",
-    url = "https://github.com/pseewald/vim-anyfold"
-  },
   ["vim-fugitive"] = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-fugitive",
@@ -270,6 +264,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-glsl",
     url = "https://github.com/tikhomirov/vim-glsl"
+  },
+  ["vim-glslViewer"] = {
+    loaded = true,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-glslViewer",
+    url = "https://github.com/patriciogonzalezvivo/vim-glslViewer"
   },
   ["vim-godot"] = {
     loaded = true,
@@ -281,15 +280,30 @@ _G.packer_plugins = {
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-processing",
     url = "https://github.com/sophacles/vim-processing"
   },
+  ["vim-solidity"] = {
+    loaded = true,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-solidity",
+    url = "https://github.com/tomlion/vim-solidity"
+  },
   ["vim-startify"] = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-startify",
     url = "https://github.com/mhinz/vim-startify"
   },
+  ["vim-surround"] = {
+    loaded = true,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-surround",
+    url = "https://github.com/tpope/vim-surround"
+  },
   ["vim-tmux-navigator"] = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-tmux-navigator",
     url = "https://github.com/christoomey/vim-tmux-navigator"
+  },
+  ["vim-visual-multi"] = {
+    loaded = true,
+    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/vim-visual-multi",
+    url = "https://github.com/mg979/vim-visual-multi"
   },
   ["vista.vim"] = {
     loaded = true,
@@ -300,11 +314,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/wal.vim",
     url = "https://github.com/dylanaraps/wal.vim"
-  },
-  ["yuck.vim"] = {
-    loaded = true,
-    path = "/home/kshitij/.local/share/nvim/site/pack/packer/start/yuck.vim",
-    url = "https://github.com/elkowar/yuck.vim"
   }
 }
 
@@ -313,9 +322,38 @@ time([[Defining packer_plugins]], false)
 time([[Runtimepath customization]], true)
 vim.o.runtimepath = vim.o.runtimepath .. ",/home/kshitij/.local/share/nvim/site/pack/packer/start/fzf/~/.fzf"
 time([[Runtimepath customization]], false)
+local module_lazy_loads = {
+  ["^nvim%-autopairs"] = "nvim-autopairs",
+  ["^nvim%-autopairs%.completion%.cmp"] = "nvim-autopairs"
+}
+local lazy_load_called = {['packer.load'] = true}
+local function lazy_load_module(module_name)
+  local to_load = {}
+  if lazy_load_called[module_name] then return nil end
+  lazy_load_called[module_name] = true
+  for module_pat, plugin_name in pairs(module_lazy_loads) do
+    if not _G.packer_plugins[plugin_name].loaded and string.match(module_name, module_pat) then
+      to_load[#to_load + 1] = plugin_name
+    end
+  end
+
+  if #to_load > 0 then
+    require('packer.load')(to_load, {module = module_name}, _G.packer_plugins)
+    local loaded_mod = package.loaded[module_name]
+    if loaded_mod then
+      return function(modname) return loaded_mod end
+    end
+  end
+end
+
+if not vim.g.packer_custom_loader_enabled then
+  table.insert(package.loaders, 1, lazy_load_module)
+  vim.g.packer_custom_loader_enabled = true
+end
+
 -- Config for: catppuccin
 time([[Config for catppuccin]], true)
-try_loadstring("\27LJ\2\nd\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\2\16term_colors\2\27transparent_background\2\nsetup\15catppuccin\frequire\0", "config", "catppuccin")
+try_loadstring("\27LJ\2\nd\0\0\3\0\4\0\a6\0\0\0'\2\1\0B\0\2\0029\0\2\0005\2\3\0B\0\2\1K\0\1\0\1\0\2\27transparent_background\2\16term_colors\2\nsetup\15catppuccin\frequire\0", "config", "catppuccin")
 time([[Config for catppuccin]], false)
 -- Config for: gitsigns.nvim
 time([[Config for gitsigns.nvim]], true)
