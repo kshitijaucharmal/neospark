@@ -83,7 +83,9 @@ return require('packer').startup(function(use)
         'tomasr/molokai',
         'sainnhe/sonokai',
         'arturgoms/moonbow.nvim',
+        "tiagovla/tokyodark.nvim",
     }
+    use { 'Everblush/nvim', as = 'everblush' }
     use { 'AlexvZyl/nordic.nvim', branch = 'main' }
     use {
         'lewis6991/gitsigns.nvim', requires = { 'nvim-lua/plenary.nvim' },

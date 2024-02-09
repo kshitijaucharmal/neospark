@@ -47,9 +47,8 @@ vim.cmd([[
 ]])
 
 -- Color scheme
---vim.cmd("colo catppuccin-mocha")
---vim.cmd("colo wal")
-vim.cmd("colo moonbow")
+vim.cmd("colo catppuccin-mocha")
+-- vim.cmd("colo wal")
 
 -- Leader
 vim.g.mapleader = " "
