@@ -36,6 +36,7 @@ local plugins = {
     "williamboman/mason.nvim",
     opts = {
       ensure_installed = {
+        "black",
         "clangd",
         "clang-format",
         "pyright",

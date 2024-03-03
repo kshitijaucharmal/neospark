@@ -7,8 +7,11 @@ M.general = {
     ['<C-u>'] = { "<C-u>zz<CR>", "Center page when going up"},
 
     -- Execution
-    ['<F4>'] = { ":!time $HOME/.scripts/executor2 %; read<CR>" },
-    ['<F5>'] = { ":!time $HOME/.scripts/executor %; read<CR>" },
+    -- ['<F4>'] = { ":!time $HOME/.scripts/executor2 %; read<CR>" },
+    -- ['<F5>'] = { ":!tmux neww time $HOME/.scripts/executor %; read<CR>" },
+
+    ['<F4>'] = { ":!tmux neww \"time $HOME/.scripts/executor2 %; read\"<CR><CR>" },
+    ['<F5>'] = { ":!tmux neww \"time $HOME/.scripts/executor %; read\"<CR><CR>" },
 
     -- Undo tree 
     ['<leader>u'] = { ":UndotreeToggle<CR>", "Toggle undotree"},
