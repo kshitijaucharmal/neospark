@@ -1,4 +1,12 @@
 local plugins = {
+  { "meatballs/notebook.nvim" },
+  { 'dccsillag/magma-nvim', run = ':UpdateRemotePlugins' },
+  {
+    "iamcco/markdown-preview.nvim",
+    cmd = { "MarkdownPreviewToggle", "MarkdownPreview", "MarkdownPreviewStop" },
+    ft = { "markdown" },
+    build = function() vim.fn["mkdp#util#install"]() end,
+  },
   {
     'rust-lang/rust.vim',
     ft = "rust",
@@ -9,6 +17,10 @@ local plugins = {
   {
     "theprimeagen/harpoon",
     event = "VeryLazy",
+  },
+  {
+    "christoomey/vim-tmux-navigator",
+    lazy = false,
   },
   {
     "OmniSharp/omnisharp-vim",

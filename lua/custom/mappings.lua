@@ -13,6 +13,12 @@ M.general = {
     ['<F4>'] = { ":!tmux neww \"time $HOME/.scripts/executor2 %; read\"<CR><CR>" },
     ['<F5>'] = { ":!tmux neww \"time $HOME/.scripts/executor %; read\"<CR><CR>" },
 
+    -- tmux
+    ['<C-h>'] = { "<cmd> TmuxNavigateLeft<CR>", "window left" },
+    ['<C-j>'] = { "<cmd> TmuxNavigateDown<CR>", "window down" },
+    ['<C-k>'] = { "<cmd> TmuxNavigateUp<CR>", "window up" },
+    ['<C-l>'] = { "<cmd> TmuxNavigateRight<CR>", "window right" },
+
     -- Undo tree 
     ['<leader>u'] = { ":UndotreeToggle<CR>", "Toggle undotree"},
 
