@@ -104,8 +104,9 @@ vim.opt.number = true
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
 
--- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+-- Disable mouse mode, can be useful for resizing splits for example!
+vim.opt.mouse = ''
+vim.opt.wrap = false
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -120,6 +121,9 @@ vim.opt.breakindent = true
 
 -- Save undo history
 vim.opt.undofile = true
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
 vim.opt.ignorecase = true
@@ -152,7 +156,11 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 8
+
+-- Tab Stop
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -182,10 +190,23 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
+--  Unconventional positions, but look good
+vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', { noremap = true })
+-- vim.api.nvim_set_keymap('n', '/', '<cmd>SearchBoxIncSearch<CR>', { noremap = true })
+--
+vim.keymap.set('n', '<leader>u', ':UndoTreeToggle<CR>', { desc = 'Undo Toggle' })
+vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { desc = 'Nvim Tree TOggle' })
+vim.keymap.set('n', '<leader>td', ':TodoTelescope<CR>', { desc = 'Todo Telescope' })
+
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Change themes
+-- vim.cmd('colorscheme ayu-dark')
+vim.keymap.set('n', '<F4>', ':!tmux neww "time $HOME/.scripts/executor2 %; read"<CR><CR>', { desc = 'Execute 2' })
+vim.keymap.set('n', '<F5>', ':!tmux neww "time $HOME/.scripts/executor %; read"<CR><CR>', { desc = 'Execute 1' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -275,14 +296,157 @@ require('lazy').setup({
       require('which-key').setup()
 
       -- Document existing key chains
-      require('which-key').add {
-        { '<leader>c', group = '[C]ode' },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
-        { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      -- require('which-key').add {
+      -- { '<leader>c', group = '[C]ode' },
+      -- { '<leader>d', group = '[D]ocument' },
+      -- { '<leader>r', group = '[R]ename' },
+      -- { '<leader>s', group = '[S]earch' },
+      -- { '<leader>w', group = '[W]orkspace' },
+      -- { '<leader>t', group = '[T]oggle' },
+      -- { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+      -- }
+    end,
+  },
+
+  {
+    'm4xshen/autoclose.nvim',
+    config = function()
+      require('autoclose').setup()
+    end,
+  },
+  -- add this to your lua/plugins.lua, lua/plugins/init.lua,  or the file you keep your other plugins:
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end,
+  },
+  {
+    'folke/todo-comments.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
+  },
+  {
+    'folke/trouble.nvim',
+    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    cmd = 'Trouble',
+    keys = {
+      {
+        '<leader>xx',
+        '<cmd>Trouble diagnostics toggle<cr>',
+        desc = 'Diagnostics (Trouble)',
+      },
+      {
+        '<leader>xX',
+        '<cmd>Trouble diagnostics toggle filter.buf=0<cr>',
+        desc = 'Buffer Diagnostics (Trouble)',
+      },
+      {
+        '<leader>cs',
+        '<cmd>Trouble symbols toggle focus=false<cr>',
+        desc = 'Symbols (Trouble)',
+      },
+      {
+        '<leader>cl',
+        '<cmd>Trouble lsp toggle focus=false win.position=right<cr>',
+        desc = 'LSP Definitions / references / ... (Trouble)',
+      },
+      {
+        '<leader>xL',
+        '<cmd>Trouble loclist toggle<cr>',
+        desc = 'Location List (Trouble)',
+      },
+      {
+        '<leader>xQ',
+        '<cmd>Trouble qflist toggle<cr>',
+        desc = 'Quickfix List (Trouble)',
+      },
+    },
+  },
+  {
+    'lukas-reineke/indent-blankline.nvim',
+    --main = 'ibl',
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
+    config = function()
+      require('indent_blankline').setup()
+    end,
+  },
+
+  { 'xiyaowong/transparent.nvim' },
+  { 'MunifTanjim/nui.nvim' },
+
+  {
+    'VonHeikemen/searchbox.nvim',
+    requires = {
+      { 'MunifTanjim/nui.nvim' },
+    },
+  },
+  {
+    'VonHeikemen/fine-cmdline.nvim',
+    requires = {
+      { 'MunifTanjim/nui.nvim' },
+    },
+  },
+
+  {
+    'nvim-tree/nvim-tree.lua',
+    config = function()
+      require('nvim-tree').setup()
+    end,
+  },
+
+  {
+    --'preservim/nerdtree',
+    'mbbill/undotree',
+  },
+
+  {
+    'AbdelrahmanDwedar/awesome-nvim-colorschemes',
+    'morhetz/gruvbox',
+  },
+
+  {
+    'numToStr/Comment.nvim',
+    config = function()
+      require('Comment').setup()
+    end,
+  },
+  {
+    'glepnir/dashboard-nvim',
+    config = function()
+      require('dashboard').setup {
+        theme = 'hyper',
+        config = {
+          week_header = {
+            enable = true,
+          },
+          shortcut = {
+            { desc = ' Update', group = '@property', action = 'Lazy update', key = 'u' },
+            { icon = ' ', desc = 'Files', group = 'Label', action = 'Telescope find_files', key = 'f' },
+            { icon = ' ', desc = 'Apps', group = 'DiagnosticHint', action = 'Telescope app', key = 'a' },
+            { icon = ' ', desc = 'Config', group = 'Number', action = 'edit $MYVIMRC', key = 'c' },
+          },
+          packages = { enable = true }, -- show how many plugins neovim loaded
+          project = { enable = true, limit = 8, icon = ' ', label = 'Recent Projects' },
+          mru = { limit = 10, icon = ' ', label = 'Recent Files' },
+          footer = { ' Have A Nice Day !! ' },
+        },
+      }
+    end,
+  },
+
+  {
+    'nvim-tree/nvim-web-devicons',
+    config = function()
+      require('nvim-web-devicons').setup {
+        -- globally enable default icons (default to false)
+        default = true,
       }
     end,
   },
@@ -363,18 +527,20 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+      vim.keymap.set('n', '<leader>tt', builtin.colorscheme, { desc = 'Change Colors' })
+      vim.keymap.set('n', '<leader>tr', '<cmd>:TransparentToggle<CR>', { desc = 'Change Transparency' })
+      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leaner>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>oo.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
-      -- Slightly advanced example of overriding default behavior and theme
+      -- Slightly advanced example of overriding default behavior and Nheme
       vim.keymap.set('n', '<leader>/', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
         builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
@@ -385,7 +551,7 @@ require('lazy').setup({
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
+      vim.keymap.set('n', '<leader>fg', function()
         builtin.live_grep {
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
@@ -393,7 +559,7 @@ require('lazy').setup({
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
+      vim.keymap.set('n', '<leader>fv', function()
         builtin.find_files { cwd = vim.fn.stdpath 'config' }
       end, { desc = '[S]earch [N]eovim files' })
     end,
@@ -716,9 +882,9 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert {
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<Tab>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
           -- Scroll the documentation window [b]ack / [f]orward
           ['<C-b>'] = cmp.mapping.scroll_docs(-4),
@@ -727,7 +893,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -773,24 +939,6 @@ require('lazy').setup({
           { name = 'path' },
         },
       }
-    end,
-  },
-
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
-    init = function()
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
-
-      -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
     end,
   },
 
@@ -866,6 +1014,9 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
+  {
+    'nvim-treesitter/playground',
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -881,7 +1032,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -913,3 +1064,14 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
+
+-- Treesitter comments
+
+require 'docmaker/detect_comments'
+vim.api.nvim_create_user_command('DetectComments', function()
+  detect_comments()
+end, {})
+
+-- Themes
+vim.cmd 'colorscheme carbonfox'
+vim.cmd 'IndentBlanklineEnable'
