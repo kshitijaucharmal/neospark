@@ -122,6 +122,9 @@ vim.opt.breakindent = true
 -- Save undo history
 vim.opt.undofile = true
 
+-- Set undodir to a path where undo history will be stored
+vim.o.undodir = vim.fn.stdpath 'config' .. '/undodir'
+
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -194,9 +197,19 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', { noremap = true })
 -- vim.api.nvim_set_keymap('n', '/', '<cmd>SearchBoxIncSearch<CR>', { noremap = true })
 --
-vim.keymap.set('n', '<leader>u', ':UndoTreeToggle<CR>', { desc = 'Undo Toggle' })
+vim.keymap.set('n', '<leader>u', ':UndotreeToggle<CR>', { desc = 'Undo Toggle' })
 vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { desc = 'Nvim Tree TOggle' })
 vim.keymap.set('n', '<leader>td', ':TodoTelescope<CR>', { desc = 'Todo Telescope' })
+
+vim.keymap.set('n', 'Q', '<nop>', { desc = 'Nothing on Q' })
+--
+vim.keymap.set('n', '<leader>hh', ':lua require("harpoon.ui").toggle_quick_menu()<CR>', { desc = 'Open Harpoon menu' })
+vim.keymap.set('n', '<leader>ha', ':lua require("harpoon.mark").add_file()<CR>', { desc = 'Add File to Harpoon' })
+vim.keymap.set('n', '<leader>1', ':lua require("harpoon.ui").nav_file(1)<CR>', { desc = 'Jump to file 1' })
+vim.keymap.set('n', '<leader>2', ':lua require("harpoon.ui").nav_file(2)<CR>', { desc = 'Jump to file 2' })
+vim.keymap.set('n', '<leader>3', ':lua require("harpoon.ui").nav_file(3)<CR>', { desc = 'Jump to file 3' })
+vim.keymap.set('n', '<leader>4', ':lua require("harpoon.ui").nav_file(4)<CR>', { desc = 'Jump to file 4' })
+vim.keymap.set('n', '<leader>5', ':lua require("harpoon.ui").nav_file(5)<CR>', { desc = 'Jump to file 5' })
 
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
@@ -272,6 +285,43 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
+    config = function()
+      require('gitsigns').setup {
+        on_attach = function(bufnr)
+          local gitsigns = require 'gitsigns'
+          local function map(mode, l, r, opts)
+            opts = opts or {}
+            opts.buffer = bufnr
+            vim.keymap.set(mode, l, r, opts)
+          end
+          map('n', '<leader>hs', gitsigns.stage_hunk)
+          map('n', '<leader>hr', gitsigns.reset_hunk)
+          map('v', '<leader>hs', function()
+            gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+          end)
+          map('v', '<leader>hr', function()
+            gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+          end)
+          map('n', '<leader>hS', gitsigns.stage_buffer)
+          map('n', '<leader>hu', gitsigns.undo_stage_hunk)
+          map('n', '<leader>hR', gitsigns.reset_buffer)
+          map('n', '<leader>hp', gitsigns.preview_hunk)
+          map('n', '<leader>hb', function()
+            gitsigns.blame_line { full = true }
+          end)
+          map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+          map('n', '<leader>hd', gitsigns.diffthis)
+          map('n', '<leader>hD', function()
+            gitsigns.diffthis '~'
+          end)
+          map('n', '<leader>td', gitsigns.toggle_deleted)
+        end,
+      }
+    end,
+  },
+
+  {
+    'tpope/vim-fugitive',
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -305,6 +355,19 @@ require('lazy').setup({
       -- { '<leader>t', group = '[T]oggle' },
       -- { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       -- }
+    end,
+  },
+
+  {
+    'waycrate/swhkd-vim',
+  },
+
+  {
+    'ThePrimeagen/harpoon',
+    event = 'VimEnter',
+    config = function()
+      require('harpoon').setup()
+      -- Harpoon
     end,
   },
 
@@ -367,17 +430,6 @@ require('lazy').setup({
       },
     },
   },
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    --main = 'ibl',
-    ---@module "ibl"
-    ---@type ibl.config
-    opts = {},
-    config = function()
-      require('indent_blankline').setup()
-    end,
-  },
-
   { 'xiyaowong/transparent.nvim' },
   { 'MunifTanjim/nui.nvim' },
 
@@ -524,6 +576,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'harpoon')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -1036,14 +1089,11 @@ require('lazy').setup({
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
-  --
-  --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-  -- { import = 'custom.plugins' },
+  -- Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going. For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
+  { import = 'custom.plugins' },
 }, {
   ui = {
-    -- If you are using a Nerd Font: set icons to an empty table which will use the
-    -- default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
+    -- If you are using a Nerd Font: set icons to an empty table which will use the default lazy.nvim defined Nerd Font icons, otherwise define a unicode icons table
     icons = vim.g.have_nerd_font and {} or {
       cmd = '⌘',
       config = '🛠',
@@ -1072,6 +1122,42 @@ vim.api.nvim_create_user_command('DetectComments', function()
   detect_comments()
 end, {})
 
+local nvim_lsp = require 'lspconfig'
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...)
+    vim.api.nvim_buf_set_keymap(bufnr, ...)
+  end
+  local function buf_set_option(...)
+    vim.api.nvim_buf_set_option(bufnr, ...)
+  end
+
+  -- Omnicompletion
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  local opts = { noremap = true, silent = true }
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', 'gR', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+end
+
+-- Omnisharp/C#/Unity
+local pid = vim.fn.getpid()
+local omnisharp_bin = '/lib/omnisharp-roslyn/OmniSharp'
+require('lspconfig').omnisharp.setup {
+  on_attach = on_attach,
+  flags = {
+    debounce_text_changes = 150,
+  },
+  cmd = { omnisharp_bin, '--languageserver', '--hostPID', tostring(pid) },
+}
+
 -- Themes
-vim.cmd 'colorscheme carbonfox'
-vim.cmd 'IndentBlanklineEnable'
+vim.cmd 'colorscheme catppuccin-mocha'
