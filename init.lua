@@ -7,12 +7,12 @@
 ========         .----------------------.   | === |          ========
 ========         |.-""""""""""""""""""-.|   |-----|          ========
 ========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
+========         ||   KICKSTART.NVIM   ||   |-----|          ======== 
 ========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
+========         ||                    ||   |-----|          ======== 
+========         ||:Tutor              ||   |:::::|          ======== 
+========         |'-..................-'|   |____o|          ======== 
+========         `"")----------------(""`   ___________      ======== 
 ========        /::::::::::|  |::::::::::\  \ no mouse \     ========
 ========       /:::========|  |==hjkl==:::\  \ required \    ========
 ========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
@@ -195,7 +195,7 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  See `:help wincmd` for a list of all window commands
 --  Unconventional positions, but look good
 vim.api.nvim_set_keymap('n', ':', '<cmd>FineCmdline<CR>', { noremap = true })
--- vim.api.nvim_set_keymap('n', '/', '<cmd>SearchBoxIncSearch<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '/', '<cmd>SearchBoxIncSearch<CR>', { noremap = true })
 --
 vim.keymap.set('n', '<leader>u', ':UndotreeToggle<CR>', { desc = 'Undo Toggle' })
 vim.keymap.set('n', '<C-n>', ':NvimTreeToggle<CR>', { desc = 'Nvim Tree TOggle' })
@@ -210,6 +210,10 @@ vim.keymap.set('n', '<leader>2', ':lua require("harpoon.ui").nav_file(2)<CR>', {
 vim.keymap.set('n', '<leader>3', ':lua require("harpoon.ui").nav_file(3)<CR>', { desc = 'Jump to file 3' })
 vim.keymap.set('n', '<leader>4', ':lua require("harpoon.ui").nav_file(4)<CR>', { desc = 'Jump to file 4' })
 vim.keymap.set('n', '<leader>5', ':lua require("harpoon.ui").nav_file(5)<CR>', { desc = 'Jump to file 5' })
+
+vim.keymap.set('n', '<leader>S', '<cmd>lua require("spectre").toggle()<CR>', { desc = 'Toggle Spectre' })
+vim.keymap.set('n', '<leader>sw', '<cmd>lua require("spectre").open_visual({select_word=true})<CR>', { desc = 'Search current word' })
+vim.keymap.set('v', '<leader>sw', '<esc><cmd>lua require("spectre").open_visual()<CR>', { desc = 'Search current word' })
 
 vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
@@ -285,39 +289,7 @@ require('lazy').setup({
         changedelete = { text = '~' },
       },
     },
-    config = function()
-      require('gitsigns').setup {
-        on_attach = function(bufnr)
-          local gitsigns = require 'gitsigns'
-          local function map(mode, l, r, opts)
-            opts = opts or {}
-            opts.buffer = bufnr
-            vim.keymap.set(mode, l, r, opts)
-          end
-          map('n', '<leader>hs', gitsigns.stage_hunk)
-          map('n', '<leader>hr', gitsigns.reset_hunk)
-          map('v', '<leader>hs', function()
-            gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end)
-          map('v', '<leader>hr', function()
-            gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
-          end)
-          map('n', '<leader>hS', gitsigns.stage_buffer)
-          map('n', '<leader>hu', gitsigns.undo_stage_hunk)
-          map('n', '<leader>hR', gitsigns.reset_buffer)
-          map('n', '<leader>hp', gitsigns.preview_hunk)
-          map('n', '<leader>hb', function()
-            gitsigns.blame_line { full = true }
-          end)
-          map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
-          map('n', '<leader>hd', gitsigns.diffthis)
-          map('n', '<leader>hD', function()
-            gitsigns.diffthis '~'
-          end)
-          map('n', '<leader>td', gitsigns.toggle_deleted)
-        end,
-      }
-    end,
+    config = function() end,
   },
 
   {
@@ -363,6 +335,13 @@ require('lazy').setup({
   },
 
   {
+    'hat0uma/csvview.nvim',
+    config = function()
+      require('csvview').setup()
+    end,
+  },
+
+  {
     'ThePrimeagen/harpoon',
     event = 'VimEnter',
     config = function()
@@ -372,10 +351,39 @@ require('lazy').setup({
   },
 
   {
+    'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl',
+    ---@module "ibl"
+    ---@type ibl.config
+    opts = {},
+  },
+
+  -- themes
+  {
+    'rebelot/kanagawa.nvim',
+    'navarasu/onedark.nvim',
+  },
+
+  {
     'm4xshen/autoclose.nvim',
     config = function()
       require('autoclose').setup()
     end,
+  },
+
+  {
+    'sbdchd/neoformat',
+  },
+
+  -- install with yarn or npm
+  {
+    'iamcco/markdown-preview.nvim',
+    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
+    build = 'cd app && yarn install',
+    init = function()
+      vim.g.mkdp_filetypes = { 'markdown' }
+    end,
+    ft = { 'markdown' },
   },
   -- add this to your lua/plugins.lua, lua/plugins/init.lua,  or the file you keep your other plugins:
   {
@@ -874,7 +882,7 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { { 'prettierd', 'prettier' } },
       },
     },
   },
@@ -993,6 +1001,10 @@ require('lazy').setup({
         },
       }
     end,
+  },
+
+  {
+    'nvim-pack/nvim-spectre',
   },
 
   -- Highlight todo, notes, etc in comments
@@ -1157,7 +1169,124 @@ require('lspconfig').omnisharp.setup {
     debounce_text_changes = 150,
   },
   cmd = { omnisharp_bin, '--languageserver', '--hostPID', tostring(pid) },
+  settings = {
+    FormattingOptions = {
+      NewLinesForBracesInMethods = false,
+      NewLinesForBracesInTypes = false,
+      NewLinesForBracesInAnonymousMethods = false,
+      NewLinesForBracesInControlBlocks = false,
+      NewLinesForBracesInAnonymousTypes = false,
+      NewLinesForBracesInObjectCollectionArrayInitializers = false,
+      NewLinesForBracesInLambdaExpressionBody = false,
+    },
+  },
 }
 
+local highlight = {
+  'RainbowRed',
+  'RainbowYellow',
+  'RainbowBlue',
+  'RainbowOrange',
+  'RainbowGreen',
+  'RainbowViolet',
+  'RainbowCyan',
+  'CursorColumn',
+  'Whitespace',
+}
+
+local hooks = require 'ibl.hooks'
+-- create the highlight groups in the highlight setup hook, so they are reset
+-- every time the colorscheme changes
+hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+  vim.api.nvim_set_hl(0, 'RainbowRed', { fg = '#E06C75' })
+  vim.api.nvim_set_hl(0, 'RainbowYellow', { fg = '#E5C07B' })
+  vim.api.nvim_set_hl(0, 'RainbowBlue', { fg = '#61AFEF' })
+  vim.api.nvim_set_hl(0, 'RainbowOrange', { fg = '#D19A66' })
+  vim.api.nvim_set_hl(0, 'RainbowGreen', { fg = '#98C379' })
+  vim.api.nvim_set_hl(0, 'RainbowViolet', { fg = '#C678DD' })
+  vim.api.nvim_set_hl(0, 'RainbowCyan', { fg = '#56B6C2' })
+end)
+
+require('ibl').setup {
+  indent = { highlight = highlight },
+  whitespace = {
+    highlight = highlight,
+    remove_blankline_trail = false,
+  },
+  scope = { enabled = true },
+}
+
+require('gitsigns').setup {
+  on_attach = function(bufnr)
+    local gitsigns = require 'gitsigns'
+    local function map(mode, l, r, opts)
+      opts = opts or {}
+      opts.buffer = bufnr
+      vim.keymap.set(mode, l, r, opts)
+    end
+    map('n', '<leader>hs', gitsigns.stage_hunk, { desc = 'Stage Hunk' })
+    map('n', '<leader>hr', gitsigns.reset_hunk, { desc = 'Reset Hunk ' })
+    map('v', '<leader>hs', function()
+      gitsigns.stage_hunk { vim.fn.line '.', vim.fn.line 'v' }
+    end)
+    map('v', '<leader>hr', function()
+      gitsigns.reset_hunk { vim.fn.line '.', vim.fn.line 'v' }
+    end)
+    map('n', '<leader>hS', gitsigns.stage_buffer, { desc = 'Stage Buffer' })
+    map('n', '<leader>hu', gitsigns.undo_stage_hunk, { desc = 'Undo Stage Buffer' })
+    map('n', '<leader>hR', gitsigns.reset_buffer, { desc = 'Reset buffer' })
+    map('n', '<leader>hp', gitsigns.preview_hunk, { desc = 'Preview Hunk' })
+    map('n', '<leader>hb', function()
+      gitsigns.blame_line { full = true, desc = 'Blame Line' }
+    end)
+    map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = 'Toggle Current Line Blame' })
+    map('n', '<leader>hd', gitsigns.diffthis, { desc = 'Diff This' })
+    map('n', '<leader>hD', function()
+      gitsigns.diffthis '~'
+    end)
+    map('n', '<leader>td', gitsigns.toggle_deleted, { desc = 'Toggle Deleted' })
+  end,
+}
+
+require('lspconfig').rust_analyzer.setup {
+  settings = {
+    ['rust-analyzer'] = {
+      assist = {
+        importGroupSyntax = false,
+      },
+      cargo = {
+        allFeatures = true,
+        buildScripts = {
+          enable = true,
+        },
+      },
+      procMacro = {
+        enable = true,
+      },
+    },
+  },
+}
+
+vim.api.nvim_create_augroup('fmt', { clear = true })
+
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   group = vim.api.nvim_create_augroup('fmt', { clear = true }),
+--   pattern = '*',
+--   callback = function()
+--     -- Set tab to 4 spaces
+--     vim.bo.shiftwidth = 4
+--     vim.bo.tabstop = 4
+--     vim.bo.expandtab = true
+--
+--     -- Join undo history and run Neoformat
+--     vim.cmd 'undojoin'
+--     vim.cmd 'Neoformat'
+--   end,
+-- })
+
+require('onedark').setup {
+  style = 'deep',
+}
 -- Themes
-vim.cmd 'colorscheme catppuccin-mocha'
+vim.cmd 'colorscheme onedark'
+vim.cmd 'TransparentEnable'
