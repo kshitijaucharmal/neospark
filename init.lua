@@ -161,9 +161,25 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 8
 
--- Tab Stop
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+-- =====================
+-- Global Tabs & Indentation
+-- =====================
+
+-- Use spaces instead of tabs
+vim.o.expandtab = true
+
+-- Indentation width
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+
+-- Smart indenting
+vim.o.smartindent = true
+vim.o.autoindent = true
+
+vim.cmd [[
+  autocmd FileType * setlocal tabstop=4 shiftwidth=4 softtabstop=4 expandtab
+]]
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -264,7 +280,6 @@ vim.opt.rtp:prepend(lazypath)
 -- NOTE: Here is where you install your plugins.
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
-  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
 
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
@@ -294,6 +309,20 @@ require('lazy').setup({
 
   {
     'tpope/vim-fugitive',
+  },
+
+  { 'ntpeters/vim-better-whitespace' },
+
+  {
+    'kawre/leetcode.nvim',
+    -- build = ':TSUpdate html', -- if you have `nvim-treesitter` installed
+    dependencies = {
+      'nvim-telescope/telescope.nvim',
+      'ibhagwan/fzf-lua',
+      'nvim-lua/plenary.nvim',
+      'MunifTanjim/nui.nvim',
+    },
+    opts = {},
   },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
@@ -350,18 +379,28 @@ require('lazy').setup({
     end,
   },
 
-  {
-    'lukas-reineke/indent-blankline.nvim',
-    main = 'ibl',
-    ---@module "ibl"
-    ---@type ibl.config
-    opts = {},
-  },
+  -- {
+  --   'lukas-reineke/indent-blankline.nvim',
+  --   -- main = 'ibl',
+  --   ---@module "ibl"
+  --   ---@type ibl.config
+  --   opts = {},
+  -- },
 
   -- themes
   {
     'rebelot/kanagawa.nvim',
     'navarasu/onedark.nvim',
+    'rose-pine/neovim',
+    'NLKNguyen/papercolor-theme',
+  },
+
+  {
+    'RedsXDD/neopywal.nvim',
+    name = 'neopywal',
+    lazy = false,
+    priority = 1000,
+    opts = {},
   },
 
   {
@@ -597,7 +636,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leaner>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>oo.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -789,7 +828,7 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {},
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -849,6 +888,26 @@ require('lazy').setup({
     end,
   },
 
+  -- Cmake Tools
+  {
+    'Civitasv/cmake-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    config = function()
+      require('cmake-tools').setup {
+        cmake_command = 'cmake',
+        cmake_build_directory = 'build',
+        cmake_build_type = 'Debug',
+        cmake_generator = 'Ninja',
+        cmake_regenerate_on_save = true,
+        cmake_build_options = {},
+        cmake_console_size = 10,
+        cmake_console_position = 'belowright',
+        cmake_show_console = 'always', -- or "only_on_error"
+        configure_args = { '-DCMAKE_EXPORT_COMPILE_COMMANDS:BOOL=ON' },
+      }
+    end,
+  },
+
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -857,25 +916,29 @@ require('lazy').setup({
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_fallback = true }
+          require('conform').format { async = true }
         end,
         mode = '',
         desc = '[F]ormat buffer',
       },
     },
     opts = {
-      notify_on_error = false,
+      notify_on_error = true,
       format_on_save = function(bufnr)
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = {}
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
         }
       end,
       formatters_by_ft = {
+        c = { 'clangd_format' },
+        cpp = { 'clangd_format' },
+        hpp = { 'clangd_format' },
+        h = { 'clangd_format' },
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -883,6 +946,13 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         javascript = { { 'prettierd', 'prettier' } },
+      },
+      formatters = {
+        clang_format = {
+          prepend_args = {
+            '--style={BasedOnStyle: LLVM, IndentWidth: 4, TabWidth: 4, UseTab: Never, AllowShortFunctionsOnASingleLine: None}',
+          },
+        },
       },
     },
   },
@@ -1047,11 +1117,18 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
+
+  {
+    'barrett-ruth/live-server.nvim',
+    build = 'pnpm add -g live-server',
+    cmd = { 'LiveServerStart', 'LiveServerStop' },
+    config = true,
+  },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
     opts = {
-      ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'cpp', 'cmake', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
       highlight = {
@@ -1182,6 +1259,10 @@ require('lspconfig').omnisharp.setup {
   },
 }
 
+require('lspconfig').clangd.setup {
+  cmd = { 'clangd', '--compile-commands-dir=build' },
+}
+
 local highlight = {
   'RainbowRed',
   'RainbowYellow',
@@ -1194,27 +1275,27 @@ local highlight = {
   'Whitespace',
 }
 
-local hooks = require 'ibl.hooks'
--- create the highlight groups in the highlight setup hook, so they are reset
--- every time the colorscheme changes
-hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-  vim.api.nvim_set_hl(0, 'RainbowRed', { fg = '#E06C75' })
-  vim.api.nvim_set_hl(0, 'RainbowYellow', { fg = '#E5C07B' })
-  vim.api.nvim_set_hl(0, 'RainbowBlue', { fg = '#61AFEF' })
-  vim.api.nvim_set_hl(0, 'RainbowOrange', { fg = '#D19A66' })
-  vim.api.nvim_set_hl(0, 'RainbowGreen', { fg = '#98C379' })
-  vim.api.nvim_set_hl(0, 'RainbowViolet', { fg = '#C678DD' })
-  vim.api.nvim_set_hl(0, 'RainbowCyan', { fg = '#56B6C2' })
-end)
-
-require('ibl').setup {
-  indent = { highlight = highlight },
-  whitespace = {
-    highlight = highlight,
-    remove_blankline_trail = false,
-  },
-  scope = { enabled = true },
-}
+-- local hooks = require 'ibl.hooks'
+-- -- create the highlight groups in the highlight setup hook, so they are reset
+-- -- every time the colorscheme changes
+-- hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
+--   vim.api.nvim_set_hl(0, 'RainbowRed', { fg = '#E06C75' })
+--   vim.api.nvim_set_hl(0, 'RainbowYellow', { fg = '#E5C07B' })
+--   vim.api.nvim_set_hl(0, 'RainbowBlue', { fg = '#61AFEF' })
+--   vim.api.nvim_set_hl(0, 'RainbowOrange', { fg = '#D19A66' })
+--   vim.api.nvim_set_hl(0, 'RainbowGreen', { fg = '#98C379' })
+--   vim.api.nvim_set_hl(0, 'RainbowViolet', { fg = '#C678DD' })
+--   vim.api.nvim_set_hl(0, 'RainbowCyan', { fg = '#56B6C2' })
+-- end)
+--
+-- require('ibl').setup {
+--   indent = { highlight = highlight },
+--   whitespace = {
+--     highlight = highlight,
+--     remove_blankline_trail = false,
+--   },
+--   scope = { enabled = true },
+-- }
 
 require('gitsigns').setup {
   on_attach = function(bufnr)
@@ -1248,6 +1329,17 @@ require('gitsigns').setup {
   end,
 }
 
+-- Set filetype-specific settings for Makefiles
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = '*',
+  callback = function()
+    vim.bo.expandtab = true
+    vim.bo.shiftwidth = 4
+    vim.bo.tabstop = 4
+    vim.bo.softtabstop = 4
+  end,
+})
+
 require('lspconfig').rust_analyzer.setup {
   settings = {
     ['rust-analyzer'] = {
@@ -1267,8 +1359,8 @@ require('lspconfig').rust_analyzer.setup {
   },
 }
 
-vim.api.nvim_create_augroup('fmt', { clear = true })
-
+-- vim.api.nvim_create_augroup('fmt', { clear = true })
+--
 -- vim.api.nvim_create_autocmd('BufWritePre', {
 --   group = vim.api.nvim_create_augroup('fmt', { clear = true }),
 --   pattern = '*',
@@ -1284,9 +1376,47 @@ vim.api.nvim_create_augroup('fmt', { clear = true })
 --   end,
 -- })
 
+-- vim.api.nvim_create_autocmd('BufWritePre', {
+--   pattern = { '*.js', '*.jsx', '*.ts', '*.tsx' },
+--   callback = function()
+--     require('conform').format { async = false, lsp_fallback = true }
+--   end,
+-- })
+
+local build_dir = 'build'
+
+-- ========================
+-- CMake Tools Shortcuts
+-- ========================
+vim.api.nvim_create_user_command('CMakeGenJSON', function()
+  vim.cmd '!cmake -S . -B build -G Ninja -DCMAKE_EXPORT_COMPILE_COMMANDS=ON'
+end, {})
+
+-- Configure project (cmake -S . -B build)
+vim.keymap.set('n', '<leader>cg', '<cmd>CMakeGenJSON<CR>', { desc = 'CMake Generate' })
+
+-- Build selected target
+vim.keymap.set('n', '<leader>cb', '<cmd>CMakeQuickBuild<CR>', { desc = 'CMake Quick Build' })
+
+-- Run selected target
+vim.keymap.set('n', '<leader>cr', '<cmd>CMakeQuickRun<CR>', { desc = 'CMake Quick Run' })
+
+-- Select target to build/run
+vim.keymap.set('n', '<leader>ct', '<cmd>CMakeSelectBuildTarget<CR>', { desc = 'CMake Select Target' })
+
+-- Select build type (Debug/Release/RelWithDebInfo)
+vim.keymap.set('n', '<leader>cm', '<cmd>CMakeSelectBuildType<CR>', { desc = 'CMake Select Build Type' })
+
+-- Stop current build or run
+vim.keymap.set('n', '<leader>cs', '<cmd>CMakeStop<CR>', { desc = 'CMake Stop' })
+
+-- Open CMake console (build/run logs)
+vim.keymap.set('n', '<leader>cl', '<cmd>CMakeOpen<CR>', { desc = 'CMake Console' })
+--
+
 require('onedark').setup {
   style = 'deep',
 }
 -- Themes
-vim.cmd 'colorscheme onedark'
-vim.cmd 'TransparentEnable'
+vim.cmd 'colorscheme tokyonight'
+vim.cmd 'TransparentDisable'
